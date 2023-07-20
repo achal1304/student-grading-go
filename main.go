@@ -1,5 +1,12 @@
 package main
 
+import (
+	"encoding/csv"
+	"fmt"
+	"os"
+	"strconv"
+)
+
 type Grade string
 
 const (
@@ -21,7 +28,43 @@ type studentStat struct {
 }
 
 func parseCSV(filePath string) []student {
-	return nil
+	var students []student
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		fmt.Println("Incorrect file path")
+		return []student{}
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	_, err = reader.Read()
+	if err != nil {
+		return []student{}
+	}
+
+	for {
+		record, err := reader.Read()
+		if err != nil {
+			if err.Error() == "EOF" {
+				break
+			}
+			fmt.Println(err)
+			break
+		}
+
+		stud := student{
+			firstName:  record[0],
+			lastName:   record[1],
+			university: record[2],
+			test1Score: studentScores(record[3]),
+			test2Score: studentScores(record[4]),
+			test3Score: studentScores(record[5]),
+			test4Score: studentScores(record[6]),
+		}
+		students = append(students, stud)
+	}
+	return students
 }
 
 func calculateGrade(students []student) []studentStat {
@@ -34,4 +77,19 @@ func findOverallTopper(gradedStudents []studentStat) studentStat {
 
 func findTopperPerUniversity(gs []studentStat) map[string]studentStat {
 	return nil
+}
+
+func studentScores(record string) int {
+	score, err := strconv.Atoi(record)
+	if err != nil {
+		fmt.Println(err)
+		return 0
+	}
+	return score
+}
+
+func main() {
+	filePath := "grades.csv"
+	fmt.Print(parseCSV(filePath))
+
 }
