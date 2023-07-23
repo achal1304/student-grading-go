@@ -68,7 +68,29 @@ func parseCSV(filePath string) []student {
 }
 
 func calculateGrade(students []student) []studentStat {
-	return nil
+	var studentStats []studentStat
+	for _, student := range students {
+		finalScore := student.test1Score + student.test2Score + student.test3Score + student.test4Score
+		avgScore := float32(finalScore) / 4
+		studentStatistics := studentStat{
+			student:    student,
+			finalScore: avgScore,
+		}
+
+		if avgScore < 35 {
+			studentStatistics.grade = F
+		} else if avgScore >= 35 && avgScore < 50 {
+			studentStatistics.grade = C
+		} else if avgScore >= 50 && avgScore < 70 {
+			studentStatistics.grade = B
+		} else if avgScore >= 70 {
+			studentStatistics.grade = A
+		}
+
+		studentStats = append(studentStats, studentStatistics)
+	}
+
+	return studentStats
 }
 
 func findOverallTopper(gradedStudents []studentStat) studentStat {
