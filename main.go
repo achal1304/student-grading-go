@@ -94,7 +94,15 @@ func calculateGrade(students []student) []studentStat {
 }
 
 func findOverallTopper(gradedStudents []studentStat) studentStat {
-	return studentStat{}
+	maxScore := 0
+	maxIndex := 0
+	for i, gradedStudent := range gradedStudents {
+		if gradedStudent.finalScore > float32(maxScore) {
+			maxScore = int(gradedStudent.finalScore)
+			maxIndex = i
+		}
+	}
+	return gradedStudents[maxIndex]
 }
 
 func findTopperPerUniversity(gs []studentStat) map[string]studentStat {
