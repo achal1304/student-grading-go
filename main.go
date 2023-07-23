@@ -106,7 +106,22 @@ func findOverallTopper(gradedStudents []studentStat) studentStat {
 }
 
 func findTopperPerUniversity(gs []studentStat) map[string]studentStat {
-	return nil
+	universityTopper := make(map[string]studentStat)
+	maxScoreUniversity := make(map[string]float32)
+	for _, studStat := range gs {
+		stat, ok := maxScoreUniversity[studStat.university]
+		if !ok {
+			maxScoreUniversity[studStat.university] = studStat.finalScore
+			universityTopper[studStat.university] = studStat
+			continue
+		}
+
+		if studStat.finalScore > stat {
+			maxScoreUniversity[studStat.university] = studStat.finalScore
+			universityTopper[studStat.university] = studStat
+		}
+	}
+	return universityTopper
 }
 
 func studentScores(record string) int {
